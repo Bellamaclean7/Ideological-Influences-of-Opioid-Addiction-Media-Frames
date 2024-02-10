@@ -1,44 +1,40 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw data to include only variables of interest and prepare for analysis
+# Author: Bella MacLean
+# Date: 10 February 2024
+# Contact: bella.maclean@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: none
 
 #### Workspace setup ####
 library(tidyverse)
+library(readr)
+library(dplyr)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+raw_data <- read_csv("data/raw_data/raw_data.csv")
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+print(raw_data)
+
+# Filter the dataset to include only the required variables
+cleaned_data <- raw_data |>
+  select(sw, sb, ns, uw, ub, 
+         policy, 
+         conservative, moderate, liberal, 
+         hsgrad, somecollege, collegegrad, postgrad) |>
+  rename(sympathetic_white = sw, 
+         sympathetic_black = sb, 
+         no_story = ns, 
+         unsympathetic_white = uw, 
+         unsympathetic_black = ub, 
+         policy = policy, 
+         high_school_grad = hsgrad, 
+         some_college = somecollege, 
+         college_grad = collegegrad, 
+         post_graduate = postgrad)
+
+# Optionally, view the first few rows of the filtered dataset
+head(cleaned_data)
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_data, "data/analysis_data/analysis_data.csv")
