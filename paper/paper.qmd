@@ -18,203 +18,114 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
-library(tidyverse)
-library(palmerpenguins)
-```
-
-
-# Introduction
-
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
-
-The remainder of this paper is structured as follows. @sec-data....
-
-
-
-# Data {#sec-data}
-
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
-
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
-
-Talk way more about it. 
-
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
+library(magrittr)
+library(stats)
+library(kableExtra)
+library(ggplot2)
+library(broom)
+library(modelsummary)
+library(here)
+library(stargazer)
+library(gt)
+library(readr)
+library(dplyr)
 library(rstanarm)
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+model_ideology_frame <- read_rds(here::here("models/ideology_model.rds"))
+show_col_types = FALSE
+
+analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+show_col_types = FALSE
 ```
 
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
+# Model
+### Model Set-Up
+This analysis seeks to understand the influence of political ideology and media framing on the public's policy support concerning opioid abuse treatment. A logistic regression model was constructed to predict the likelihood of policy support `policy` as a function of political ideology and media framing. The model includes two main ideology predictors: `conservative` and `liberal`. Additionally, the model incorporates media framing variables: `sympathetic_white` and `sympathetic_black` which represent sympathetic media narratives towards opioid users of different races, and `unsympathetic_white` and `unsympathetic_black`, representing unsympathetic narratives.
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
+The terms `conservative:media_frames` and `liberal:media_frames` are designed to detect whether the relationship between media framing and policy support differs across the ideological spectrum. The response variable `Policy` is binary, indicating whether an individual supports treatment-focused policies for opioid abuse. Therefore, a logistic regression model (logit model) is employed to predict the probability of policy support, which is suitable for binary outcome data. The logit model is defined as:
+
+```{r}
+#| warning: false
+#| echo: false
+
+# Define the model formula. This formula is used to specify the relationship between a dependent variable and multiple independent variables in a regression model. The dependent variable (policy) is influenced by various predictors including political ideology (conservative and liberal) and media frames (sympathetic_white, sympathetic_black, unsympathetic_white, unsympathetic_black)
+model_formula <- policy ~ conservative + liberal + 
+                 sympathetic_white + sympathetic_black + 
+                 unsympathetic_white + unsympathetic_black +
+                 conservative*sympathetic_white + conservative*sympathetic_black +
+                 conservative*unsympathetic_white + conservative*unsympathetic_black +
+                 liberal*sympathetic_white + liberal*sympathetic_black +
+                 liberal*unsympathetic_white + liberal*unsympathetic_black
+
+# Print just the formula
+print(model_formula)
+
+```
+
+The next step after setting up the logistic regression model is understanding how people's ideological beliefs and the various ways the media frames opioid use impact their support for policy . To do this, a coefficient table (@tbl-coefficients) was produced to capture the essence of the relationships between predictor variables. The goal is to quantify the relationship between each predictor variable (ideological beliefs, media framings, etc.) and interaction term (like conservative:media_frames) and the corresponding likelihood of policy support.
+
+The coefficients, for instance, point to whether a factor, like political leaning or a specific type of media narrative, nudges public opinion towards or away from a certain policy stance, and importantly, how strong that nudge is. It also looks at standard errors, z-values, and p-values to check the confidence in these effects—are they solid or could they be just chance findings? And those 95% confidence intervals give a ballpark figure, showing where the true effect likely falls. @tbl-terms_explanation_table summarizes each term found in the coefficient table.
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: tbl-terms_explanation_table
+#| tbl-cap: Explanation of Terms in the Coefficient Table
+
+# Creating a dataframe named 'terms_explanantion' with two columns 'term' and 'description' in order to define the explanations for each term in the coefficient table used later in the paper
+terms_explanation <- data.frame(
+  Term = c("Estimate", "Std.Error", "Statistic", "P.Value", "Conf.Low", "Conf.High"),
+  Description = c("The coefficient estimate indicates the change in the log odds of the outcome for a one-unit increase in the predictor. Positive values indicate an increase in the likelihood of policy support, while negative values suggest a decrease.",
+                  "The standard error of the coefficient estimate provides a measure of the estimate's precision. Smaller values indicate more precise estimates.",
+                  "The test statistic (usually a Z-value) used to assess the significance of the predictor is derived from the coefficient estimate divided by its standard error.",
+                  "The p-value associated with the test statistic indicates the probability of observing the data, or something more extreme, under the null hypothesis that the coefficient is zero. A p-value below a certain threshold (e.g., 0.05) suggests statistical significance.",
+                  "The lower bound of the 95% confidence interval for the coefficient estimate provides a range within which we are 95% confident that the true coefficient value lies.",
+                  "The upper bound of the 95% confidence interval for the coefficient estimate, together with the lower bound, offers insight into the estimate's uncertainty; narrower intervals indicate more precise estimates.")
 )
+
+# Create the table with kable and using kableExtra to format the table properly to fit on the pdf page nicely or else the columns would overlap to try and fit
+kable(terms_explanation, format = "latex", booktabs = TRUE, col.names = c("Term", "Description"), align = c('l', 'l')) |>
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 10) |>
+  column_spec(2, width = "10cm")
+
 ```
-
-
-
-
-# Discussion
-
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
 
 ```{r}
-#| eval: true
-#| echo: false
-#| message: false
 #| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+#| echo: false
+#| label: tbl-coefficients
+#| tbl-cap: Logistic regression coefficient estimates, standard errors, z-values, p-values, and 95% confidence intervals.
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
+# This line of code transforms the summary output of a logistic regression model (stored in 'model_ideology_frame') into a tidy format. The 'tidy' function is from the 'broom' package. It extracts the essential elements of the model's summary (e.g., coefficients, standard errors, z-values, and p-values) and augments it with 95% confidence intervals for each coefficient.
+tidy_model <- tidy(model_ideology_frame, conf.int = TRUE)
 
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+# Create a table of coefficients with confidence intervals using kable and kableExtra
+coef_table <- knitr::kable(tidy_model, "latex", booktabs = TRUE) |> # "booktabs = TRUE" is used to render a professional-quality table layout.
+  kableExtra::kable_styling(latex_options = c("striped", "scale_down")) |> # this line using 'latex_options' applies striped rows for better readability and scaling down the table to fit within the page margins.
+  kableExtra::add_header_above(c(" " = 5, "Confidence Interval" = 2)) # Header above confidence interval columns for better clarification
+
+# Print the coefficient table
+coef_table
+
 ```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
 
 ```{r}
-#| echo: false
-#| eval: true
-#| message: false
 #| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
+#| echo: false
+#| label: tbl-fit-statistics
+#| tbl-cap: Model fit statistics including Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), and other relevant measures.
 
-plot(first_model, "trace")
+# Extract model fit statistics
+fit_model <- glance(model_ideology_frame)
 
-plot(first_model, "rhat")
+# Create and print a table for model fit statistics using the same methods as table 1 (tbl-coefficients)
+fit_stats_table <- knitr::kable(fit_model, "latex", booktabs = TRUE) |>
+  kableExtra::kable_styling(latex_options = c("striped", "scale_down"))
+
+# Print the fit statistics table
+fit_stats_table
+
 ```
-
-
-
-\newpage
-
 
 # References
 
