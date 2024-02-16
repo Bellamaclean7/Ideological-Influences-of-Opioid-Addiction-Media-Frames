@@ -18,6 +18,11 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
+install.packages("purrr")
+library(purrr)
+library(patchwork)
+library(tidyr)
+library(gridExtra)
 library(magrittr)
 library(stats)
 library(kableExtra)
@@ -40,9 +45,9 @@ show_col_types = FALSE
 
 # Model
 ### Model Set-Up
-This analysis seeks to understand the influence of political ideology and media framing on the public's policy support concerning opioid abuse treatment. A logistic regression model was constructed to predict the likelihood of policy support `policy` as a function of political ideology and media framing. The model includes two main ideology predictors: `conservative` and `liberal`. Additionally, the model incorporates media framing variables: `sympathetic_white` and `sympathetic_black` which represent sympathetic media narratives towards opioid users of different races, and `unsympathetic_white` and `unsympathetic_black`, representing unsympathetic narratives.
+This analysis seeks to understand the influence of political ideology and media framing on the public's policy support concerning opioid abuse treatment. A logistic regression model was constructed to predict the likelihood of favouring government-funded treatment over favouring arrest (`policy`) as a function of political ideology and media framing. The model includes two main ideology predictors: `conservative` and `liberal`. Additionally, the model incorporates media framing variables: `sympathetic_white` and `sympathetic_black` which represent sympathetic media narratives towards opioid users of different races, and `unsympathetic_white` and `unsympathetic_black`, representing unsympathetic narratives.
 
-The terms `conservative:media_frames` and `liberal:media_frames` are designed to detect whether the relationship between media framing and policy support differs across the ideological spectrum. The response variable `Policy` is binary, indicating whether an individual supports treatment-focused policies for opioid abuse. Therefore, a logistic regression model (logit model) is employed to predict the probability of policy support, which is suitable for binary outcome data. The logit model is defined as:
+The terms `conservative:media_frames` and `liberal:media_frames` are designed to detect whether the relationship between media framing and policy support differs across the ideological spectrum. The response variable `Policy` is binary, indicating whether an individual supports or rejects treatment-focused intervention for opioid abuse. Therefore, a logistic regression model (logit model) is employed to predict the probability of policy support, which is suitable for binary outcome data. The logit model is defined as:
 
 ```{r}
 #| warning: false
@@ -64,7 +69,7 @@ print(model_formula)
 
 The next step after setting up the logistic regression model is understanding how people's ideological beliefs and the various ways the media frames opioid use impact their support for policy . To do this, a coefficient table (@tbl-coefficients) was produced to capture the essence of the relationships between predictor variables. The goal is to quantify the relationship between each predictor variable (ideological beliefs, media framings, etc.) and interaction term (like conservative:media_frames) and the corresponding likelihood of policy support.
 
-The coefficients, for instance, point to whether a factor, like political leaning or a specific type of media narrative, nudges public opinion towards or away from a certain policy stance, and importantly, how strong that nudge is. It also looks at standard errors, z-values, and p-values to check the confidence in these effects—are they solid or could they be just chance findings? And those 95% confidence intervals give a ballpark figure, showing where the true effect likely falls. @tbl-terms_explanation_table summarizes each term found in the coefficient table.
+The coefficients, for instance, point to whether a factor, like political leaning or a specific type of media narrative, nudges public opinion towards or away from a certain policy stance, and importantly, how strong that nudge is. It also looks at standard errors, z-values, and p-values to check the confidence in these effects—are they solid or could they be just chance findings? And those 95% confidence intervals give a ballpark figure, showing where the true effect likely falls. @tbl-terms_explanation_table summarizes each term found in the coefficient table. Furthermore, the model's fit statistics (@tbl-fit-statistics), including AIC and BIC among others, offer a snapshot of the model's overall performance and suitability for the data at hand.
 
 ```{r}
 #| warning: false
@@ -109,6 +114,8 @@ coef_table
 
 ```
 
+Note: Control condition for media frames = 'no story', control condition for ideology = 'moderate'
+
 ```{r}
 #| warning: false
 #| echo: false
@@ -127,6 +134,13 @@ fit_stats_table
 
 ```
 
+### Model Justification
+The remainder of this paper will specifically examine the interaction effects to understand how the influence of media framing on policy support for opioid abuse treatment varies according to the political ideology of respondents. This approach aims to uncover how different ideological perspectives (conservative versus liberal) shape the effect that sympathetic or unsympathetic media narratives about opioid users have on an individual's likelihood to support treatment-focused policies. This analysis is guided by the following hypotheses:
+
+$H_0$: There is no interaction effect between political ideology (conservative or liberal) and media framing (sympathetic or unsympathetic, towards white or black opioid users) on the support for policy regarding opioid abuse treatment. The effect of media framing on policy support does not differ across the ideological spectrum (conservative versus liberal).
+$H_1$: There is a significant interaction effect between political ideology and sympathetic media framing on policy support for opioid abuse treatment, with liberals showing a stronger positive response towards treatment-focused policies than conservatives when exposed to sympathetic narratives (towards white or black opioid users). This suggests that sympathetic framing will be more effective in increasing support for treatment-focused policies among liberals compared to conservatives.
+$H_2$: There is a significant interaction effect between political ideology and unsympathetic media framing on policy support for opioid abuse treatment, with liberals again expected to have a stronger response towards treatment-focused policies (i.e., moving towards supporting treatment over arrest) than conservatives when exposed to unsympathetic narratives. However, in this context, the "stronger response" could be interpreted as being less swayed by unsympathetic framing towards punitive measures and maintaining or increasing their support for treatment-focused interventions.
+
+
+
 # References
-
-
