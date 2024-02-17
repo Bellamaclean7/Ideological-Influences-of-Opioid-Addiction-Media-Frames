@@ -44,32 +44,3 @@ saveRDS(
   model_ideology_frame,
   file = "models/ideology_model.rds"
 )
-
-# Education Model
-# Convert education variables to numeric
-education_vars <- c('high_school_grad', 'some_college', 'college_grad', 'post_graduate')
-
-# Create interaction terms for education level and media framing conditions
-for (edu in education_vars) {
-  for (frame in frame_vars) {
-    interaction_name <- paste(edu, frame, sep = "_")
-    analysis_data[[interaction_name]] <- analysis_data[[edu]] * analysis_data[[frame]]
-  }
-}
-
-# Define the model formula for education and frame interactions
-formula_education_frame <- reformulate(c(education_vars, frame_vars,
-                                         paste0(rep(education_vars, each = length(frame_vars)), '_', rep(frame_vars, times = length(education_vars)))), 
-                                       response = "policy")
-
-# Run the logistic regression model for education and frame
-model_education_frame <- glm(formula_education_frame, family = binomial(link = "logit"), data = analysis_data)
-
-# Summary of the model for education and frame
-summary(model_education_frame)
-
-#### Save model ####
-saveRDS(
-  model_education_frame,
-  file = "models/education_model.rds"
-)
