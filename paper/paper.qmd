@@ -84,9 +84,6 @@ Much of the studies literature review draws on Michelle Alexander's 2010 book th
 ### Methodology
 This paper will replicate the survey data that was originally collected for the (2022) paper by Raychaudhuri, Mendelberg, and McDonough. The study constructed a hypothetical newspaper story about opioid abuse, varying the race of the users (Black or White) and the valence of the frame (sympathetic or unsympathetic). The focus on Black and White racialized groups was guided by the White “face” of the opioid epidemic in contrast to the Black “face” of other drug epidemics @Raychaudhuri2022. The authors then conducted two randomized between-subjects survey experiments on two separate samples. The main sample consists of 1,517 White American adults from the NORC Amerispeak Panel, a national probability based sample. The other sample was from the survey firm Dynata. The authors discribe the process as follows: "Each participant was randomly assigned to one of four treatments or a no-story control. In the treatments, respondents read a hypothetical news story about drug use, varying the race of users (White or Black) and the valence of the frame (sympathetic or unsympathetic)" @Raychaudhuri2022.
 
-# Features
-
-
 # Model
 ### Model Set-Up
 This analysis seeks to understand the influence of political ideology and media framing on the public's policy support concerning opioid abuse treatment. A logistic regression model was constructed to predict the likelihood of favouring government-funded treatment over favouring arrest (`policy`) as a function of political ideology and media framing. The model includes two main ideology predictors: `conservative` and `liberal`. Additionally, the model incorporates media framing variables: `sympathetic_white` and `sympathetic_black` which represent sympathetic media narratives towards opioid users of different races, and `unsympathetic_white` and `unsympathetic_black`, representing unsympathetic narratives.
