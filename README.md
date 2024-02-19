@@ -4,6 +4,7 @@
 
 This repo features a reproduction of Tanika Raychaudhuri, Tali Mendelberg, and Anne McDonough's paper, [**`The Political Effects of Opioid Addiction Frames`**](https://doi.org/10.1086/720326), containing data, `R` scripts, and a final `PDF` report ([link here](https://github.com/Bellamaclean7/Ideological-Influences-of-Opioid-Addiction-Media-Frames/blob/main/paper/paper.pdf)). This analysis furthered the original paper's original research question: "Is sympathy for drug users racially selective among White Americans?" by extending the inquiry to examining the role of political ideology in shaping White Americans' reactions to sympathetic media portrayals of opioid abuse.
 
+A replication using the Social Science Reproduction Platform was also produced: https://www.socialsciencereproduction.org/reproductions/1752/index?step=0
 
 ## File Structure
 
