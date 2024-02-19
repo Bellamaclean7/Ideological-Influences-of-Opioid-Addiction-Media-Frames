@@ -1,17 +1,15 @@
-# Starter folder
+# Analysis of Ideological Influences of Opioid Addiction Media Frames
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
-
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+This repo features a reproduction of Tanika Raychaudhuri, Tali Mendelberg, and Anne McDonough's paper, [**`The Political Effects of Opioid Addiction Frames`**](https://doi.org/10.1086/720326), containing data, `R` scripts, and a final `PDF` report ([link here](https://github.com/Bellamaclean7/Ideological-Influences-of-Opioid-Addiction-Media-Frames/blob/main/paper/paper.pdf)). This analysis furthered the original paper's original research question: "Is sympathy for drug users racially selective among White Americans?" by extending the inquiry to examining the role of political ideology in shaping White Americans' reactions to sympathetic media portrayals of opioid abuse.
 
 
 ## File Structure
 
 The repo is structured as:
 
--   `data/raw_data` contains the raw data as obtained from X.
+-   `data/raw_data` contains the raw data as obtained from [X](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NVMD6X).
 -   `data/analysis_data` contains the cleaned dataset that was constructed.
 -   `model` contains fitted models. 
 -   `other` contains relevant literature, details about LLM chat interactions, and sketches.
@@ -21,4 +19,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
+Aspects of the code were written with the help of the ChatGPT. The entire chat history is available in inputs/llms/usage.txt.
