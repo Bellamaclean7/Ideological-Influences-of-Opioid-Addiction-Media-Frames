@@ -19,4 +19,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the ChatGPT. The entire chat history is available in inputs/llms/usage.txt.
+Aspects of the code were written with the help of the ChatGPT. The entire chat history is available in [other/llms/usage.txt](https://github.com/Bellamaclean7/Ideological-Influences-of-Opioid-Addiction-Media-Frames/tree/main/other/llm).
