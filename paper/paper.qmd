@@ -25,6 +25,7 @@ library(broom)
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
+library(kableExtra)
 
 model_ideology_frame <- read_rds(here::here("models/ideology_model.rds"))
 show_col_types = FALSE
@@ -34,19 +35,16 @@ show_col_types = FALSE
 ```
 
 # Introduction
-
-The intersection of race and criminal justice policy in the United States has long been a point of contention, marked by notable divergences in perception between Black and White Americans. Predominant assumptions suggest a steady punitive stance in U.S. public opinion towards criminal justice issues, with such punitiveness among Whites often attributed to underlying anti-Black prejudice @BoboJohnson2004. This phenomenon is particularly pronounced in the context of the war on drugs, where drug epidemics are often portrayed negatively within society, with a tendency to associate such crises predominantly with non-White and minority communities. This portrayal not only reinforces stigmatizing stereotypes but also influences public opinion and policy.
-
-In recent years the United States has experienced a shift in racial framing and valence within media and society. Despite similar rates of illicit drug use among Black and White Americans throughout history, Black Americans are significantly more likely to be incarcerated for drug offenses. In contrast, White Americans, especially in the context of the opioid crisis, experience a more lenient, medicalized approach to their drug use, revealing a racialized American drug policy @NetherlandHansen2017.
+In recent years the United States has experienced a shift in racial framing and valence within media and society. Despite similar rates of illicit drug use among Black and White Americans throughout history, Black Americans are significantly more likely to be incarcerated for drug offenses. This phenomenon is particularly pronounced in the context of the war on drugs @BoboJohnson2004. In contrast, White Americans, especially in the context of the opioid crisis, experience a more lenient, medicalized approach to their drug use, revealing a racialized American drug policy @NetherlandHansen2017.
 
 This shift in the racial framing of drug use and policy within media and societal discourse is a direct result of White Americans and the the opioid epidemic. As a result, drug abuse has been met with a more sympathetic, medicalized response, highlighting a stark contrast in how drug use has historically been conceptualized and addressed throughout the country. A 2022 paper by Tanika Raychaudhuri, Tali Mendelberg, and Anne McDonough in The Journal of Politics
 Volume 85, Number 1 (January 2023), titled "The Political Effects of Opioid Addiction Frames" delves into this interplay of media coverage on public support for drug treatment policies and the racial framing and valence (positive or negative portrayal) of opioid abuse influence on policy views @Raychaudhuri2022. 
 
 Raychaudhuri, Mendelberg, and McDonough's study investigates the impact of media coverage on public support for drug treatment policies, focusing on how the racial framing and valence of opioid abuse influence White Americans' policy views. Unlike previous drug epidemics portrayed negatively and associated with non-White users, the opioid crisis is often framed sympathetically and as predominantly affecting White Americans. This sympathetic portrayal is thought to contribute to the broad public support for treating opioid abuse as a public health issue rather than a criminal one @Raychaudhuri2022. 
 
-The study revealed that when opioid users, both White and Black, were shown in a sympathetic light, White people's support for treatment options rose. However, this supportive attitude was noticeably stronger when the users depicted were White, pointing to a bias in empathy based on race. Essentially, White Americans showed a preference for offering treatment to individuals of their own racial background. On the other hand, portrayals lacking sympathy didn't really change opinions, regardless of the user's race @Raychaudhuri2022.
+The study revealed that when opioid users, both White and Black, were shown in a sympathetic light, White people's support for treatment options rose. This supportive attitude was noticeably stronger when the users depicted were White, pointing to a bias in empathy based on race. On the other hand, portrayals lacking sympathy didn't really change opinions, regardless of the user's race @Raychaudhuri2022.
 
-This paper aims to replicate the study conducted by Raychaudhuri, Mendelberg, and McDonough, focusing on their original research question: "Is sympathy for drug users racially selective among White Americans?" However, it will extend the inquiry by examining the role of political ideology in shaping White Americans' reactions to sympathetic media portrayals of opioid abuse. Specifically, it will investigate whether political ideology conditions the extent of racial selectivity in empathetic responses to drug users. The paper will reveal that there is some level of there is indeed some interaction effect between media frames and the ideological spectrum on support for treatment related policy. 
+This paper aims to replicate the study conducted by Raychaudhuri, Mendelberg, and McDonough, focusing on their original research question: "Is sympathy for drug users racially selective among White Americans?" However, it will extend the inquiry by examining the role of political ideology in shaping White Americans' reactions to sympathetic media portrayals of opioid abuse. Specifically, it will investigate whether political ideology conditions the extent of racial selectivity in empathetic responses to drug users. The paper will reveal that there is some indeed some level of interaction effect between media frames and the ideological spectrum on support for treatment related policy. 
 
 This reproduction was conducted using the statistical programming language R @citeR. To further enable the analysis, the following packages were employed: knitr @knitr for dynamic report generation and kableExtra @kableExtra to enhance the presentation of tables with advanced formatting options. The broom package @broom for converting statistical analysis objects into tidy formats, aiding in more effective and efficient data handling and interpretation. dplyr @dplyr For data manipulation and preparation. ggplot2 @ggplot2 for creating effective and well presented data visualizations, enabling proper communication of findings. Lastly, tidyverse @Wickham2019.
 
@@ -67,12 +65,16 @@ The original survey data assessed participants on 45 variables, being representa
 ```{r}
 #| warning: false
 #| echo: false
+#| fig.pos: 'H'
 #| label: tbl-cleaned_data
 #| tbl-cap: Cleaned Data
 
+# Read the dataset
 analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
 
-head(analysis_data)
+# Output a nicely formatted table of the first five rows of the dataset
+kable(head(analysis_data, 5), "latex", booktabs = TRUE) |>
+  kable_styling(bootstrap_options = c("striped", "hover"), font_size = 5)
 
 ```
 
@@ -107,6 +109,7 @@ The coefficients, for instance, point to whether a factor, like political leanin
 ```{r}
 #| warning: false
 #| echo: false
+#| fig.pos: 'H'
 #| label: tbl-terms_explanation_table
 #| tbl-cap: Explanation of Terms in the Coefficient Table
 
@@ -185,6 +188,7 @@ The graph exposes that there is a higher proportion of support for treatment ove
 ```{r}
 #| warning: false
 #| echo: false
+#| fig.pos: 'H'
 #| label: fig-policy_vs_media_frames
 #| fig-cap: Policy Support by Valence and Race (Media Frames)
 
@@ -230,6 +234,7 @@ The exceptions to this are the interaction terms `liberal:sympathetic_white` and
 #| warning: false
 #| echo: false
 #| label: fig-interactions
+#| fig.pos: 'H'
 #| fig-cap: Interaction effects of political ideology and media framing on policy support
 
 model_formula <- policy ~ conservative + liberal + sympathetic_white + sympathetic_black + 
