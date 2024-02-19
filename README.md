@@ -20,4 +20,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-None of the code code produced in this paper was written with the help of the ChatGPT. Some aspects of the written analysis were enhanced with the help of ChatGPT. This included running the paper through ChatGPT to catch speeling errors, grammar errors, etc. The entire chat history is available in [other/llms/usage.txt](https://github.com/Bellamaclean7/Ideological-Influences-of-Opioid-Addiction-Media-Frames/tree/main/other/llm).
+None of the code code produced in this paper was written with the help of the ChatGPT. Some aspects of the written analysis were enhanced with the help of ChatGPT. This included running the paper through ChatGPT to catch speeling errors, grammar errors, etc. Most importantly, ChatGPT aided in finding me relevant literature to this paper. The entire chat history is available in [other/llms/usage.txt](https://github.com/Bellamaclean7/Ideological-Influences-of-Opioid-Addiction-Media-Frames/tree/main/other/llm).
