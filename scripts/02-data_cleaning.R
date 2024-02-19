@@ -19,19 +19,13 @@ print(raw_data)
 # Filter the dataset to include only the required variables
 cleaned_data <- raw_data |>
   select(sw, sb, ns, uw, ub, 
-         policy, 
-         conservative, moderate, liberal, 
-         hsgrad, somecollege, collegegrad, postgrad) |>
+         policy, conservative, moderate, liberal) |>
   rename(sympathetic_white = sw, 
          sympathetic_black = sb, 
          no_story = ns, 
          unsympathetic_white = uw, 
          unsympathetic_black = ub, 
-         policy = policy, 
-         high_school_grad = hsgrad, 
-         some_college = somecollege, 
-         college_grad = collegegrad, 
-         post_graduate = postgrad)
+         policy = policy)
 
 # Optionally, view the first few rows of the filtered dataset
 head(cleaned_data)

@@ -18,29 +18,6 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
-library(ggplot2) # used to create figure
-library(gridExtra) # used to print figure
-library(dplyr) # for data manipulation
-library(broom) # for tidy function
-library(readr) # for read_csv
-library(stringr) # for string manipulation
-library(purrr)
-library(patchwork)
-library(tidyr)
-library(gridExtra)
-library(magrittr)
-library(stats)
-library(kableExtra)
-library(ggplot2)
-library(broom)
-library(modelsummary)
-library(here)
-library(stargazer)
-library(gt)
-library(readr)
-library(dplyr)
-library(rstanarm)
-
 library(stats)
 library(knitr)
 library(kableExtra)
@@ -69,7 +46,7 @@ Raychaudhuri, Mendelberg, and McDonough's study investigates the impact of media
 
 The study revealed that when opioid users, both White and Black, were shown in a sympathetic light, White people's support for treatment options rose. However, this supportive attitude was noticeably stronger when the users depicted were White, pointing to a bias in empathy based on race. Essentially, White Americans showed a preference for offering treatment to individuals of their own racial background. On the other hand, portrayals lacking sympathy didn't really change opinions, regardless of the user's race @Raychaudhuri2022.
 
-This paper aims to replicate the study conducted by Raychaudhuri, Mendelberg, and McDonough, focusing on their original research question: "Is sympathy for drug users racially selective among White Americans?" However, it will extend the inquiry by examining the role of political ideology in shaping White Americans' reactions to sympathetic media portrayals of opioid abuse. Specifically, it will investigate whether political ideology conditions the extent of racial selectivity in empathetic responses to drug users.
+This paper aims to replicate the study conducted by Raychaudhuri, Mendelberg, and McDonough, focusing on their original research question: "Is sympathy for drug users racially selective among White Americans?" However, it will extend the inquiry by examining the role of political ideology in shaping White Americans' reactions to sympathetic media portrayals of opioid abuse. Specifically, it will investigate whether political ideology conditions the extent of racial selectivity in empathetic responses to drug users. The paper will reveal that there is some level of there is indeed some interaction effect between media frames and the ideological spectrum on support for treatment related policy. 
 
 This reproduction was conducted using the statistical programming language R @citeR. To further enable the analysis, the following packages were employed: knitr @knitr for dynamic report generation and kableExtra @kableExtra to enhance the presentation of tables with advanced formatting options. The broom package @broom for converting statistical analysis objects into tidy formats, aiding in more effective and efficient data handling and interpretation. dplyr @dplyr For data manipulation and preparation. ggplot2 @ggplot2 for creating effective and well presented data visualizations, enabling proper communication of findings. Lastly, tidyverse @Wickham2019.
 
@@ -82,7 +59,22 @@ The paper used for replication is from the The Journal of Politics Volume 85, Nu
 Much of the studies literature review draws on Michelle Alexander's 2010 book that focuses on mass incarceration in the age of colourblindness @Alexander2010. The paper also draw upon Michael Collins 2019 Article Titled “No Gentler War on Drugs: How Race Made the Opioid Crisis" @Collins2019. These peices of literature aid in theorizing that historically, drug abuse focuses on the racial impact of the “War on Drugs,” a punitive policy response to crack cocaine. Unlike the opioid crisis, the crack cocaine crisis led to the incarceration of millions, most of whom were non-White Americans @Raychaudhuri2022. Media coverage of cocaine often depicted Black users in an unsympathetic light, linking their drug use to involvement in other crimes. Julie Netherland and Helena Hansen's article titled "White opioids: Pharmaceutical race and the war on drugs that wasn’t" aids in proving that by contrast to the crack epidemic, news coverage now frames opioid abuse largely as a crisis afflicting White Americans and when doing so it also tends to use a positive valence. By contrast, the Black “face” often carries negative overtones @Raychaudhuri2022. Overall, the literature aids in building the study's foundation argument that the racialization of drug epidemics can not merely be looked at as a matter of public health crises but also as an issue deeply intertwined with socio-political narratives and racial prejudices.
 
 ### Methodology
-This paper will replicate the survey data that was originally collected for the (2022) paper by Raychaudhuri, Mendelberg, and McDonough. The study constructed a hypothetical newspaper story about opioid abuse, varying the race of the users (Black or White) and the valence of the frame (sympathetic or unsympathetic). The focus on Black and White racialized groups was guided by the White “face” of the opioid epidemic in contrast to the Black “face” of other drug epidemics @Raychaudhuri2022. The authors then conducted two randomized between-subjects survey experiments on two separate samples. The main sample consists of 1,517 White American adults from the NORC Amerispeak Panel, a national probability based sample. The other sample was from the survey firm Dynata. The authors discribe the process as follows: "Each participant was randomly assigned to one of four treatments or a no-story control. In the treatments, respondents read a hypothetical news story about drug use, varying the race of users (White or Black) and the valence of the frame (sympathetic or unsympathetic)" @Raychaudhuri2022.
+This paper will replicate the survey data that was originally collected for the (2022) paper by Raychaudhuri, Mendelberg, and McDonough. The study constructed a hypothetical newspaper story about opioid abuse, varying the race of the users (Black or White) and the valence of the frame (sympathetic or unsympathetic). The focus on Black and White radicalized groups was guided by the White “face” of the opioid epidemic in contrast to the Black “face” of other drug epidemics @Raychaudhuri2022. The authors then conducted two randomized between-subjects survey experiments on two separate samples. The main sample consists of 1,517 White American adults from the NORC Amerispeak Panel, a national probability based sample. The other sample was from the survey firm Dynata. The authors describe the process as follows: "Each participant was randomly assigned to one of four treatments or a no-story control. In the treatments, respondents read a hypothetical news story about drug use, varying the race of users (White or Black) and the valence of the frame (sympathetic or unsympathetic)" @Raychaudhuri2022.
+
+# Features
+The original survey data assessed participants on 45 variables, being representative of geographical location, education level, polictical affiliation, ideology, and racial attitudes and affiliations. The main sample consists of 1,517 White American adults from the NORC Amerispeak Panel, a national probability based sample. The other sample was from the survey firm Dynata. The original paper includes three data sets; data from pre-test (Dynata panel), data from main experiment (NORC Amerispeak Panel), and data for the state-level opioid mortality analysis (CDC). However, this reproduction is focused solely on the data from the main experiement and includes variables only found in the main experiment data set. This reproduction omits data for the state-level opioid mortality analysis (CDC) and the data from the pre-test (Dynata panel). This data sets were not relevant to the reproduction. This reproduction also changed the name of some of the main experiments variables in the data set for better clarity. The data set was then cleaned to include only relevant variables applicable to this reproduction. @tbl-cleaned_data shows a sample of the cleaned data set.
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: tbl-cleaned_data
+#| tbl-cap: Cleaned Data
+
+analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+
+head(analysis_data)
+
+```
 
 # Model
 ### Model Set-Up
@@ -196,8 +188,10 @@ The graph exposes that there is a higher proportion of support for treatment ove
 #| label: fig-policy_vs_media_frames
 #| fig-cap: Policy Support by Valence and Race (Media Frames)
 
+# Reading in data
 analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"), show_col_types = FALSE)
 
+# Here I am selecting electing relevant columns from the dataset and reshaping the data from wide to long format
 data_long <- analysis_data |>
   select(sympathetic_white, sympathetic_black, unsympathetic_white, unsympathetic_black, policy) |>
   pivot_longer(cols = -policy, names_to = "category", values_to = "value") |>
@@ -206,10 +200,13 @@ data_long <- analysis_data |>
   summarise(support_for_treatment = mean(policy, na.rm = TRUE),
             support_for_arrest = 1 - support_for_treatment)
 
+# Here I am further reshaping of the data for plotting
+# I am also melting the data frame to have a single column for policy type and another for proportion
 data_long_melted <- pivot_longer(data_long, cols = c(support_for_treatment, support_for_arrest),
                                  names_to = "policy_type", values_to = "proportion") |>
   mutate(policy_type = factor(policy_type, levels = c("support_for_treatment", "support_for_arrest")))
 
+# Creating a bar graph using ggplot
 ggplot(data_long_melted, aes(x = category, y = proportion, fill = policy_type)) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_fill_manual(values = c("support_for_treatment" = "blue", "support_for_arrest" = "red")) +
@@ -263,7 +260,7 @@ ggplot(tidy_model, aes(x = estimate, y = term)) +
   geom_point() + # Add points for estimates
   geom_errorbarh(aes(xmin = estimate - std.error, xmax = estimate + std.error), height = 0.2) + # Error bars
   theme_minimal() + # Use a minimal theme
-  labs(x = "Estimate", y = "Variable", title = "Forest Plot of Ideology Model Estimates") + # Labels
+  labs(x = "Estimate", y = "Variable", title = "Ideology Model Estimates") + # Labels
   geom_vline(xintercept = 0, linetype = "dashed", color = "red") # Vertical line at zero
 ```
 
@@ -272,6 +269,7 @@ The interest to examine the interaction effects between political ideology (cons
 
 Building upon the insights from Pyra et al. and Raychaudhuri, Mendelberg, and McDonough, this discussion contributes to the understanding of how political ideologies intertwine with media framings that influence public support for opioid abuse treatment policies. 
 
+### Findings
 The null hypothesis ($H_0$) stated that there would be no interaction effect between political ideology and media framing on support for opioid abuse treatment policy. However, @fig-interactions shows varying estimates across different combinations of political ideology and media framing. This suggests that there may be an interaction effect. This is because the estimates for both liberal and conservative ideologies when paired with certain sympathetic framings are positive and do not overlap with the zero line, indicating a significant effect. This suggests that there is indeed some interaction effect, which leads to the rejection of the null hypothesis.
 
 $H_1$ stated there would be a significant interaction effect between political ideology and sympathetic media framing, with liberals showing a stronger positive response towards treatment-focused policies than conservatives. The graph indicates that both liberals and conservative have a positive estimate for both `:sympathetic_white` and `:sympathetic_black`. This suggests that liberals and conservatives indeed show more support for treatment-focused policies when exposed to sympathetic narratives, regardless of the race of the opioid user. However, the liberal estimate for `:sympathetic_white` is the only variable to not overlap with zero, a sign of a strong positive response towards treatment-focused policies when framed in a white, sympathetic lens. This aids in supporting $H_1$, however, $H_1$ stated that liberals would show a stronger positive response towards treatment-focused policies than conservatives when exposed to sympathetic narratives, regardless of the users race, and this is only true when discussing sympathetic narratives toward white opiod users.
@@ -288,10 +286,12 @@ Other accounts for bias could be present in the media content used for the study
 ### Limitations
 While the research offers significant insights into the impact of media framing on policy views, it focuses primarily on White Americans' responses. Future research could explore how different racial groups respond to such framing and whether the effects observed in this study hold across diverse demographics. Exploring the effects across multiple racial groups could aid in strengthening the papers conclusions. Therefore, being a reproduction, this paper faces the same limitation. The potential existence of sampling bias discussed above can also be seen as a limitation and therefore effects the integrity of this paper. 
 
-# Future Research 
-Future research could look into the psychological mechanisms that may explain why and how political ideologies modulate responses to media framing of opioid users. It is also imperative to understand the role of individual identity, such as race and personal experience with opioid abuse, in shaping one's reaction to policy framing. Could it be that personal connections to the opioid crisis, either through community impact or personal acquaintance with sufferers, are powerful enough to override political predispositions? Personal experience could play a significant role in an individuals views on media framing and policy and seems like a strong future area of research reagrding both this paper and the original. 
+### Future Research 
+Future research could look into the psychological mechanisms that may explain why and how political ideologies modulate responses to media framing of opioid users. It is also imperative to understand the role of individual identity, such as race and personal experience with opioid abuse, in shaping one's reaction to policy framing. Could it be that personal connections to the opioid crisis, either through community impact or personal acquaintance with sufferers, are powerful enough to override political predispositions? Personal experience could play a significant role in an individuals views on media framing and policy and seems like a strong future area of research regarding both this paper and the original. 
 
 # Conclusion 
-This study contributes to the growing body of literature that seeks to understand the opioid crisis not just as a public health issue, but as a societal issue that is deeply intertwined with race, politics, and media. By replicating and extending the work of Raychaudhuri, Mendelberg, and McDonough, this paper sheds light on the nuanced ways in which these factors interact to shape policy preferences, offering insights that could inform more effective and equitable approaches to addressing the opioid epidemic.
+This study contributes to the growing body of literature that seeks to understand the opioid crisis not just as a public health issue, but as a societal issue that is deeply intertwined with race, politics, ideology, and media. By replicating and extending the work of Raychaudhuri, Mendelberg, and McDonough, this paper sheds light on the ways in which these factors interact to shape policy preferences, offering insights that could inform more effective and equitable approaches to addressing the opioid epidemic.
+
+\newpage
 
 # References
