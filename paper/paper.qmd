@@ -1,5 +1,5 @@
 ---
-title: "Ideological Positioning and Racial Media Framing in the Opioid Epidemic Influences Policy Outlooks"
+title: "Ideological Positioning and Racial Media Framing on the Opioid Epidemic Influences Policy Outlooks"
 subtitle: "A Replication Study on Policy Outlooks among White Americans in the Context of Drug Abuse Media Narratives"
 author: Bella MacLean
 thanks: "*Code and data are available at: https://github.com/Bellamaclean7/Ideological-Influences-of-Opioid-Addiction-Media-Frames; Replication on Social Science Reproduction platform available at: https://doi.org/10.48152/ssrp-t3vw-5z41"
