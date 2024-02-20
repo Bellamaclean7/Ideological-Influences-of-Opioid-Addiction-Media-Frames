@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Create my two models and share them to their respective locations
+# Purpose: Create my model and save it to respective location
 # Author: Bella MacLean
 # Date: 10 February 2024
 # Contact: bella.maclean@mail.utoronto.ca
