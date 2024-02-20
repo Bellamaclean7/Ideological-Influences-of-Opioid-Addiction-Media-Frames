@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: simulates the two models I plan to create and anaylze (ideology and media frames, education and media frames)
+# Purpose: simulates the model I plan to create and anaylze (ideology and media frames)
 # Author: Bella MacLean
 # Date: 10 February 2024
 # Contact: bella.maclean@mail.utoronto.ca
@@ -7,50 +7,51 @@
 # Pre-requisites: none
 
 #### Workspace setup ####
+library(broom)
 library(ggplot2)
+library(dplyr)
 
-#### Simulate data ####
-# Set seed for reproducibility
-set.seed(123)  
-
-# Number of observations
-n <- 500
-
-# Simulate data
-sim_data <- data.frame(
-  Policy = rbinom(n, 1, 0.5),  # Binary outcome (favoring treatment = 1)
-  conservative = rbinom(n, 1, 0.5),
-  liberal = rbinom(n, 1, 0.5),
-  hsgrad = rbinom(n, 1, 0.3),
-  somecollege = rbinom(n, 1, 0.3),
-  collegegrad = rbinom(n, 1, 0.2),
-  postgrad = rbinom(n, 1, 0.2),
-  sw = rbinom(n, 1, 0.25),
-  sb = rbinom(n, 1, 0.25),
-  uw = rbinom(n, 1, 0.25),
-  ub = rbinom(n, 1, 0.25)
+# Simulating a dataset
+# Set Seed
+set.seed(123)  # For reproducibility
+n <- 500  # Number of observations
+analysis_data <- data.frame(
+  policy = sample(0:1, n, replace = TRUE),
+  conservative = sample(0:1, n, replace = TRUE),
+  liberal = sample(0:1, n, replace = TRUE),
+  sympathetic_white = sample(0:1, n, replace = TRUE),
+  sympathetic_black = sample(0:1, n, replace = TRUE),
+  unsympathetic_white = sample(0:1, n, replace = TRUE),
+  unsympathetic_black = sample(0:1, n, replace = TRUE)
 )
 
-# Here I am confirming each row has only one level of education and one frame
-sim_data$moderate <- 1 - (sim_data$conservative + sim_data$liberal) # moderate as reference (not shown)
-sim_data$ns <- 1 - (sim_data$sw + sim_data$sb + sim_data$uw + sim_data$ub)  # ns as reference (not shown)
+# Define the model formula
+model_formula <- policy ~ conservative + liberal + 
+  sympathetic_white + sympathetic_black + 
+  unsympathetic_white + unsympathetic_black + 
+  conservative:sympathetic_white + conservative:sympathetic_black + 
+  conservative:unsympathetic_white + conservative:unsympathetic_black + 
+  liberal:sympathetic_white + liberal:sympathetic_black + 
+  liberal:unsympathetic_white + liberal:unsympathetic_black
 
-# Basic model without interactions for simplicity of simulation (for ideology)
-model_ideology_frame <- glm(Policy ~ conservative + liberal + sw + sb + uw + ub, data = sim_data, family = binomial(link = "logit"))
+# Fit the logistic regression model
+model_ideology_frame <- glm(formula = model_formula, family = binomial(link = "logit"), data = analysis_data)
 
-# Predict and add to sim_data
-sim_data$predicted_ideology_frame <- predict(model_ideology_frame, type = "response")
+# Create a tidy dataframe from your model
+tidy_model <- broom::tidy(model_ideology_frame) |>
+  filter(term %in% c("liberal:unsympathetic_white", 
+                     "liberal:unsympathetic_black", 
+                     "liberal:sympathetic_white", 
+                     "liberal:sympathetic_black", 
+                     "conservative:unsympathetic_white", 
+                     "conservative:unsympathetic_black", 
+                     "conservative:sympathetic_white", 
+                     "conservative:sympathetic_black"))
 
-# (for education)
-model_education_frame <- glm(Policy ~ hsgrad + somecollege + collegegrad + postgrad + sw + sb + uw + ub, data = sim_data, family = binomial(link = "logit"))
-
-# Predict and add to sim_data
-sim_data$predicted_education_frame <- predict(model_education_frame, type = "response")
-
-# Simulated visualization for Ideology and Frame Model
-ggplot(sim_data, aes(x = conservative, y = predicted_ideology_frame)) +
-  geom_boxplot(aes(group = conservative, fill = factor(conservative))) +
-  labs(x = "Conservative (0 = No, 1 = Yes)", y = "Predicted Probability of Favoring Treatment",
-       title = "Predicted Probability by Ideology") +
-  scale_fill_discrete(name = "Conservative") +
-  theme_minimal()
+# Create the Forest Plot
+ggplot(tidy_model, aes(x = estimate, y = reorder(term, estimate))) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = estimate - std.error, xmax = estimate + std.error), height = 0.2) +
+  theme_minimal() +
+  labs(x = "Estimate", y = "Variable", title = "Ideology Model Estimates") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red")
